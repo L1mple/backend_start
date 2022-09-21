@@ -3,7 +3,8 @@ from pydantic import BaseModel, Field
 
 
 class Car(BaseModel):
-    car_id: Union[str, None] = Field(description="Russian car number", max_length=6, example="К897ЩА")
+    car_id: Union[str, None] = Field(description="Russian car number", max_length=6, example="К897ЩА",
+                                     regex=r"^[А-я]{1}[0-9]{3}[А-я]{2}$")
     model: Union[str, None] = Field(default=None, description="Model of car", example="BMW X999")
     # Номер паспорта через -
     owner: Union[str, None, int] = Field(default=None, description="Passport number", min_length=10, max_length=11,
@@ -15,7 +16,8 @@ class Car(BaseModel):
 
 
 class UpdateCar(BaseModel):
-    car_id: Union[str, None] = Field(description="Russian car number", max_length=6, example="К897ЩА")
+    car_id: Union[str, None] = Field(description="Russian car number", max_length=6, example="К897ЩА",
+                                     regex=r"^[А-я]{1}[0-9]{3}[А-я]{2}$")
     model: Union[str, None] = Field(default=None, description="Model of car", example="BMW X999")
     # Номер паспорта через -
     owner: Union[str, None, int] = Field(default=None, description="Passport number", min_length=10, max_length=11,

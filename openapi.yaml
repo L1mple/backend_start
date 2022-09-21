@@ -1,0 +1,228 @@
+openapi: 3.0.2
+info:
+  title: FastAPI
+  version: 0.1.0
+paths:
+  /car/{car_id}:
+    get:
+      summary: Read Item
+      operationId: read_item_car__car_id__get
+      parameters:
+        - description: Russian number with lower or upper case letters
+          required: true
+          schema:
+            title: Car Id
+            maxLength: 6
+            pattern: ^[А-я]{1}[0-9]{3}[А-я]{2}$
+            type: string
+            description: Russian number with lower or upper case letters
+          example: Г123Ло
+          name: car_id
+          in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      summary: Delete Item
+      operationId: delete_item_car__car_id__delete
+      parameters:
+        - description: Russian number with lower or upper case letters
+          required: true
+          schema:
+            title: Car Id
+            maxLength: 6
+            type: string
+            description: Russian number with lower or upper case letters
+          example: Г123Ло
+          name: car_id
+          in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /car:
+    get:
+      summary: Read Item
+      operationId: read_item_car_get
+      parameters:
+        - required: false
+          schema:
+            title: Page
+            exclusiveMinimum: False
+            type: integer
+            default: 1
+          name: page
+          in: query
+        - required: true
+          schema:
+            title: Per Page
+            exclusiveMinimum: False
+            type: integer
+          name: per_page
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      summary: Create Item
+      operationId: create_item_car_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Car'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      summary: Update Item
+      operationId: update_item_car_patch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCar'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    Car:
+      title: Car
+      type: object
+      properties:
+        car_id:
+          title: Car Id
+          maxLength: 6
+          pattern: ^[А-я]{1}[0-9]{3}[А-я]{2}$
+          type: string
+          description: Russian car number
+          example: К897ЩА
+        model:
+          title: Model
+          type: string
+          description: Model of car
+          example: BMW X999
+        owner:
+          title: Owner
+          anyOf:
+            - type: string
+              minLength: 10
+              maxLength: 11
+              pattern: ^[0-9]{4}.[0-9]{6}$
+            - type: integer
+          description: Passport number
+          example: 1234-123456
+        mileage:
+          title: Mileage
+          type: number
+          description: mileage of the car in kilometers
+          default: 0
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    UpdateCar:
+      title: UpdateCar
+      type: object
+      properties:
+        car_id:
+          title: Car Id
+          maxLength: 6
+          pattern: ^[А-я]{1}[0-9]{3}[А-я]{2}$
+          type: string
+          description: Russian car number
+          example: К897ЩА
+        model:
+          title: Model
+          type: string
+          description: Model of car
+          example: BMW X999
+        owner:
+          title: Owner
+          anyOf:
+            - type: string
+              minLength: 10
+              maxLength: 11
+              pattern: ^[0-9]{4}.[0-9]{6}$
+            - type: integer
+          description: Passport number
+          example: 1234-123456
+        mileage:
+          title: Mileage
+          type: number
+          description: mileage of the car in kilometers
+    ValidationError:
+      title: ValidationError
+      required:
+        - loc
+        - msg
+        - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            type: string
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string

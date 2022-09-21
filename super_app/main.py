@@ -25,7 +25,8 @@ number_of_cars_in_page = 3
 
 
 @app.get("/car/{car_id}", response_model=schemas.Car)
-def read_item(car_id: Union[str, None] = Path(default=None, max_length=6, regex=r"^[А-я]{1}[0-9]{3}[А-я]{2}$"), db: Session = Depends(get_db)):
+def read_item(car_id: Union[str, None] = Path(default=None, max_length=6, regex=r"^[А-я]{1}[0-9]{3}[А-я]{2}$",
+                                              example="Г123Ло", description="Russian number with lower or upper case letters"), db: Session = Depends(get_db)):
     db_car = crud.get_car(db, car_id)
     if db_car is None:
         raise HTTPException(status_code=404, detail="404 NOT FOUND")
@@ -43,9 +44,9 @@ def create_item(car: schemas.Car, db: Session = Depends(get_db)):
 
 
 @app.get("/car")
-def read_user(page: int = Query(default=1, gt=0), per_page: int = Query(default=..., gt=0), db: Session = Depends(get_db)):
+def read_item(page: int = Query(default=1, gt=0), per_page: int = Query(default=..., gt=0), db: Session = Depends(get_db)):
     if per_page < page:
-        raise HTTPException(status_code=400, detail="per_page parameter greater than page parameter")
+        raise HTTPException(status_code=400, detail="per_page parameter must be greater than page parameter")
     else:
         return crud.get_all_cars(db=db, page=page, per_page=per_page, number_of_cars_in_page=number_of_cars_in_page)
 
@@ -60,7 +61,8 @@ def update_item(car: schemas.UpdateCar, db: Session = Depends(get_db)):
 
 
 @app.delete("/car/{car_id}", response_model=schemas.Car)
-def delete_item(car_id: Union[str, None] = Path(default=None, max_length=6), db: Session = Depends(get_db)):
+def delete_item(car_id: Union[str, None] = Path(default=None, max_length=6,
+                                                example="Г123Ло", description="Russian number with lower or upper case letters"), db: Session = Depends(get_db)):
     db_car = crud.get_car(db, car_id)
     if not db_car:
         raise HTTPException(status_code=404, detail="404 NOT FOUND")
