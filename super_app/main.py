@@ -1,12 +1,18 @@
-from typing import Union, List
+from typing import Union
 
-from fastapi import FastAPI, HTTPException, Path, Depends, Query
+from fastapi import FastAPI, HTTPException, Path, Depends, Query, Request
 from sqlalchemy.orm import Session
 
+from loguru import logger
 from super_app import schemas, crud, models
 from super_app.database import SessionLocal, engine
 
+
 models.Base.metadata.create_all(bind=engine)
+
+
+logger.remove()
+logger.add("logs/logfile.log", format="{time:HH:mm:ss} | {level} | {message}", rotation="1 KB", retention=5)
 
 app = FastAPI()
 
@@ -22,6 +28,14 @@ def get_db():
 
 # Число машин на одной странице(для запроса с учетом пагинации)
 number_of_cars_in_page = 3
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    logger.info(f"REQUEST: {request.method} {request.url}")
+    response = await call_next(request)
+    logger.info(f"RESPONSE CODE: {response.status_code}")
+    return response
 
 
 @app.get("/car/{car_id}", response_model=schemas.Car)
