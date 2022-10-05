@@ -1,6 +1,6 @@
 # Simple REST API service
 ## How to use
-Fisrt you need to clone this repo to your computer:
+First you need to clone this repo to your computer:
 ```
 git clone https://github.com/L1mple/backend_start.git
 ```
@@ -10,7 +10,7 @@ docker-compose up
 ```
 And the application will automatically start.
 ## How to interact
-You can go webpage:
+You can go to webpage:
 ```
 http://127.0.0.1:800/docs#/
 ```
