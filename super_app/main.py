@@ -1,7 +1,7 @@
 from typing import Union
 
 from fastapi import FastAPI, HTTPException, Path, Depends, Query, Request
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession as Session
 
 from loguru import logger
 from super_app import schemas, crud, models
