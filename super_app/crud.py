@@ -1,6 +1,5 @@
-from sqlalchemy.ext.asyncio import AsyncSession as Session
-
-from super_app import schemas, models
+from sqlmodel import Session
+from super_app import models
 
 
 def validate_car_owner(car_owner: str):
@@ -20,7 +19,7 @@ def get_all_cars(db: Session, page: int, per_page: int):
     return db.query(models.Car).order_by(models.Car.car_id).offset((page - 1) * per_page).limit(per_page).all()
 
 
-def create_car(db: Session, car: schemas.Car):
+def create_car(db: Session, car: models.Car):
     car.owner = validate_car_owner(str(car.owner))
     db_car = models.Car(
         car_id=car.car_id.upper(),
@@ -35,10 +34,11 @@ def create_car(db: Session, car: schemas.Car):
     return db_car
 
 
-def update_car(db: Session, car: schemas.UpdateCar):
+def update_car(db: Session, car: models.UpdateCar):
+    car_data = car.dict(exclude_unset=True)
     car.owner = validate_car_owner(str(car.owner))
     db_car = get_car(db, car.car_id)
-    car_data = car.dict(exclude_unset=True)
+    print(car_data)
     for key, value in car_data.items():
         setattr(db_car, key, value)
     db.add(db_car)
@@ -54,7 +54,7 @@ def delete_car(db: Session, car_id: str):
     return db_car
 
 
-def replace_car(db: Session, car: schemas.Car):
+def replace_car(db: Session, car: models.Car):
     car.owner = validate_car_owner(str(car.owner))
     db_car = get_car(db, car.car_id)
     car_data = car.dict(exclude_unset=False)

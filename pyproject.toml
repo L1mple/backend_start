@@ -76,6 +76,7 @@ virtualenv = "20.4.7"
 virtualenv-clone = "0.5.4"
 webencodings = "0.5.1"
 win32-setctime = "1.1.0"
+sqlmodel = "^0.0.8"
 
 
 [build-system]
