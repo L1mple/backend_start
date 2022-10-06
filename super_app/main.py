@@ -26,10 +26,6 @@ def get_db():
         db.close()
 
 
-# Число машин на одной странице(для запроса с учетом пагинации)
-number_of_cars_in_page = 3
-
-
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     logger.info(f"REQUEST: {request.method} {request.url}")
@@ -59,10 +55,7 @@ def create_item(car: schemas.Car, db: Session = Depends(get_db)):
 
 @app.get("/car")
 def read_item(page: int = Query(default=1, gt=0), per_page: int = Query(default=..., gt=0), db: Session = Depends(get_db)):
-    if per_page < page:
-        raise HTTPException(status_code=400, detail="per_page parameter must be greater than page parameter")
-    else:
-        return crud.get_all_cars(db=db, page=page, per_page=per_page, number_of_cars_in_page=number_of_cars_in_page)
+    return crud.get_all_cars(db=db, page=page, per_page=per_page)
 
 
 @app.patch("/car", response_model=schemas.Car)

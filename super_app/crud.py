@@ -1,5 +1,4 @@
-from sqlalchemy.orm import Session
-from  sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession as Session
 
 from super_app import schemas, models
 
@@ -17,8 +16,8 @@ def get_car(db: Session, car_id: str):
     return db.query(models.Car).filter(models.Car.car_id == car_id.upper()).first()
 
 
-def get_all_cars(db: Session, page: int, per_page: int, number_of_cars_in_page: int):
-    return db.query(models.Car).order_by(models.Car.car_id).all()[(page-1)*number_of_cars_in_page:per_page*number_of_cars_in_page]
+def get_all_cars(db: Session, page: int, per_page: int):
+    return db.query(models.Car).order_by(models.Car.car_id).offset((page - 1) * per_page).limit(per_page).all()
 
 
 def create_car(db: Session, car: schemas.Car):
