@@ -8,6 +8,8 @@ from loguru import logger
 from super_app import crud, models
 from super_app.database import engine
 
+from prometheus_fastapi_instrumentator import Instrumentator
+
 
 def create_db_and_tables():
     models.SQLModel.metadata.create_all(engine)
@@ -30,6 +32,7 @@ def get_db():
 
 @app.on_event("startup")
 def on_startup():
+    Instrumentator().instrument(app).expose(app)
     create_db_and_tables()
 
 
@@ -76,7 +79,8 @@ def update_item(car: models.UpdateCar, db: Session = Depends(get_db)):
 
 @app.delete("/car/{car_id}", response_model=models.Car)
 def delete_item(car_id: Union[str, None] = Path(default=None, max_length=6,
-                                                example="Г123Ло", description="Russian number with lower or upper case letters"), db: Session = Depends(get_db)):
+                                                example="Г123Ло", description="Russian number with lower or upper case letters",
+                                                regex=r"^[А-я]{1}[0-9]{3}[А-я]{2}$"), db: Session = Depends(get_db)):
     db_car = crud.get_car(db, car_id)
     if not db_car:
         raise HTTPException(status_code=404, detail="404 NOT FOUND")
