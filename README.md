@@ -12,7 +12,7 @@ And the application will automatically start.
 ## How to interact
 You can go to webpage:
 ```
-http://127.0.0.1:800/docs#/
+http://127.0.0.1:8082/docs#/
 ```
 to see OpenAPI docs
 ## Database
