@@ -1,6 +1,16 @@
 version: '3'
 
 services:
+  web:
+    container_name: "web"
+    image: nginx:alpine
+    depends_on:
+      - app
+    ports:
+      - "8082:81"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+
   db:
     container_name: postgresql_db
     image: postgres
@@ -33,8 +43,6 @@ services:
     command: bash -c "alembic upgrade head && uvicorn super_app.main:app --host 0.0.0.0 --port 800 --reload"
     volumes:
       - .:/app
-    ports:
-      - "800:800"
     depends_on:
       - db
     restart: always
