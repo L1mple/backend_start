@@ -16,6 +16,14 @@ from typing import Union
 
 
 class Car(SQLModel, table=True):
+    """
+    Car model for database and validation requests
+
+    car_id - Russian car number (example = "К897ЩА")
+    model - Model of car (string)
+    owner - Owner's passport number (example = "1234-123456")
+    mileage - Mileage of a car (float)
+    """
     __tablename__ = "Cars_data"
 
     car_id: Union[None, str] = Field(default=..., description="Russian car number", max_length=6,
@@ -38,6 +46,14 @@ class Car(SQLModel, table=True):
 
 
 class UpdateCar(SQLModel):
+    """
+    Car model for PATCH request
+
+    car_id - Russian car number (example = "К897ЩА")
+    model - Model of car (string)
+    owner - Owner's passport number (example = "1234-123456")
+    mileage - Mileage of a car (float)
+    """
     car_id: Union[None, str] = Field(default=..., description="Russian car number", max_length=6,
                                      regex=r"^[А-я]{1}[0-9]{3}[А-я]{2}$")
     model: Union[None, str] = Field(default=None, description="Model of car")
